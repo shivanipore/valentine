@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Be My Valentine 💖</title>
+
+  <style>
+    * { box-sizing: border-box; font-family: "Comic Sans MS", cursive, sans-serif; }
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+      position: relative;
+    }
+    .container {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 2; /* above floating hearts */
+    }
+    h1 { color: #ff4d6d; font-size: 1.8rem; margin-bottom: 20px; }
+    p { font-size: 1.1rem; color: #444; }
+    button {
+      font-size: 1rem;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    #yes { background: #ff4d6d; color: white; animation: bounce 1.5s infinite; }
+    #no { background: #ddd; position: absolute; left: 140px; top: 0; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    .slideshow { width: 100%; height: 300px; border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
+    .slideshow img { width: 100%; height: 100%; object-fit: contain; display: none; background: #000; }
+    .slideshow img.active { display: block; }
+
+    .message { display: none; font-size: 1.5rem; color: #ff4d6d; }
+
+    .hearts {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      top: 0;
+      left: 0;
+      z-index: 1; /* behind container */
+    }
+    .heart { position: absolute; font-size: 18px; animation: floatUp 5s linear infinite; }
+    @keyframes floatUp {
+      from { transform: translateY(100vh); opacity: 1; }
+      to { transform: translateY(-10vh); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="hearts"></div>
+
+  <audio id="music" loop>
+    <source src="audio/music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="container">
+
+    <!-- START SCREEN -->
+    <div id="startScreen">
+      <h1>💌 A Special Message 💌</h1>
+      <button id="startBtn">Start 💖</button>
+    </div>
+
+    <!-- LETTER SCREEN -->
+    <div id="letter" style="display:none;">
+      <h1>Hey Sumit ❤️</h1>
+      <p>
+        From the moment you walked into my life, you made everything brighter.
+        You make me laugh, you make me feel safe, and you make my heart feel full.
+        <br><br>
+        I have something special to ask you…
+      </p>
+      <button id="continueBtn">Continue 💌</button>
+    </div>
+
+    <!-- MAIN SCREEN -->
+    <div id="main" style="display:none;">
+      <div class="slideshow">
+        <img src="photos/1.jpeg" class="active">
+        <img src="photos/2.jpeg">
+        <img src="photos/3.jpeg">
+        <img src="photos/4.jpeg">
+        <img src="photos/5.jpeg">
+        <img src="photos/6.jpeg">
+      </div>
+
+      <h1>Will you be my Valentine? 💖</h1>
+      <button id="yes">Yes 💘</button>
+      <button id="no">No 💔</button>
+
+      <div class="message" id="message">
+        Yayyy 🥰💘  
+        <br><br>
+        You’re officially my Valentine 💖  
+        <br><br>
+        See you on Feb 14 😘
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const heartsContainer = document.querySelector(".hearts");
+    const startScreen = document.getElementById("startScreen");
+    const startBtn = document.getElementById("startBtn");
+    const letter = document.getElementById("letter");
+    const continueBtn = document.getElementById("continueBtn");
+    const main = document.getElementById("main");
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    const message = document.getElementById("message");
+    const music = document.getElementById("music");
+
+    /* ---------- HEARTS FLOATING CONTINUOUSLY ---------- */
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerText = Math.random() > 0.5 ? "❤️" : "💋"; // mix hearts & kisses
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (12 + Math.random() * 20) + "px";
+      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+      heartsContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+    setInterval(createHeart, 300);
+
+    /* ---------- SCREEN FLOW ---------- */
+    startBtn.addEventListener("click", () => {
+      startScreen.style.display = "none";
+      letter.style.display = "block";
+      music.play(); // start audio
+    });
+
+    continueBtn.addEventListener("click", () => {
+      letter.style.display = "none";
+      main.style.display = "block";
+    });
+
+    /* ---------- YES CLICK ---------- */
+    yesBtn.addEventListener("click", () => {
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+      message.style.display = "block";
+
+      // spawn more floating kisses on YES
+      setInterval(() => {
+        const kiss = document.createElement("div");
+        kiss.className = "heart";
+        kiss.innerText = "💋";
+        kiss.style.left = Math.random() * 100 + "vw";
+        kiss.style.fontSize = (18 + Math.random() * 15) + "px";
+        kiss.style.animationDuration = (3 + Math.random() * 2) + "s";
+        heartsContainer.appendChild(kiss);
+        setTimeout(() => kiss.remove(), 4000);
+      }, 200);
+
+    });
+
+    /* ---------- NO BUTTON RUNS AWAY ---------- */
+    function moveNo() {
+      noBtn.style.left = Math.random() * 200 + "px";
+      noBtn.style.top = Math.random() * 40 + "px";
+    }
+    noBtn.addEventListener("mouseover", moveNo);
+    noBtn.addEventListener("touchstart", moveNo);
+
+    /* ---------- SLIDESHOW ---------- */
+    let index = 0;
+    const images = document.querySelectorAll(".slideshow img");
+    setInterval(() => {
+      images[index].classList.remove("active");
+      index = (index + 1) % images.length;
+      images[index].classList.add("active");
+    }, 2500);
+  </script>
+
+</body>
+</html>
